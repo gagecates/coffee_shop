@@ -5,7 +5,7 @@ from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = 'gmc-fnsd.auth0.com'
+AUTH0_DOMAIN = 'fnsd-gmc.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'Coffee'
 
@@ -52,15 +52,15 @@ def get_token_auth_header():
 
 def check_permissions(permission, payload):
     def check_permissions(permission, payload):
-    if 'permissions' not in payload:
-        abort(400)
+        if 'permissions' not in payload:
+            abort(400)
 
-    if permission not in payload['permissions']:
-        raise AuthError({
-            'code': 'unauthorized',
-            'description': 'Permission Not found',
-        }, 401)
-    return True
+        if permission not in payload['permissions']:
+            raise AuthError({
+                'code': 'unauthorized',
+                'description': 'Permission Not found',
+            }, 401)
+        return True
 
 
 def verify_decode_jwt(token):
