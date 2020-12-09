@@ -11,7 +11,8 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
-db_drop_and_create_all()
+# db_drop_and_create_all() 
+# used for initial creation of db tables. Commented after startup to avoid dropping tables after setup.
 
 '''
 @TODO implement endpoint
@@ -75,7 +76,7 @@ def post_drink(payload):
     title = drink_data['title']
     recipe = json.dumps(drink_data['recipe'])
     new_drink = Drink(title=title, recipe=recipe)
-    drink.insert()
+    new_drink.insert()
 
     return jsonify({
         'success': True,
@@ -102,9 +103,10 @@ def edit_drink(payload, id):
     drink = Drink.query.get(id)
     if not drink:
         abort(404)
-    drink.title = data['title']
-    drink.recipe = json.dumps(data['recipe'])
-    drink.update()
+    edited_title = data['title']
+    edited_recipe = json.dumps(data['recipe'])
+    updated_drink = Drink(title=title, recipe=recipe)
+    updated_drink.update()
 
     return jsonify({
         'success': True,
@@ -151,11 +153,11 @@ def unprocessable(error):
                     }), 422
 
 @app.errorhandler(404)
-def unprocessable(error):
+def not_found(error):
     return jsonify({
                     "success": False, 
                     "error": 404,
-                    "message": "unprocessable"
+                    "message": "Not found"
                     }), 404
 
 
@@ -166,6 +168,14 @@ def bad_request(error):
         "error": 400,
         "message": 'Bad Request'
     }), 400
+
+@app.errorhandler(401)
+def unauthorized(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": 'Unathorized'
+    }), 401
 
 
 @app.errorhandler(AuthError)
