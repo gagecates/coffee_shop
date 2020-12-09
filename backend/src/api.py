@@ -25,6 +25,8 @@ db_drop_and_create_all()
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
     drinks = [drink.short() for drink in Drink.query.all()]
+    if not drinks:
+        abort(404)
 
     return jsonify({
         'success': True,
@@ -45,6 +47,8 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(payload):
     drink_detailed = [drink.long() for drink in Drink.query.all()]
+    if not drink_detailed:
+        abort(404)
 
     return jsonify({
         'success': True,
